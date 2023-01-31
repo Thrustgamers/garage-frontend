@@ -1,0 +1,76 @@
+#root {
+  margin: 0px;
+  padding: 0px;
+}
+.background {
+  width: 100%;
+  background-color: #000000;
+}
+/* .logingroup { 
+  position: relative;
+  height: 20px; 
+  width: 250px; 
+  top: 300px;
+  left: 200px;
+} */
+.main-container { 
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid black;
+  height: 800px;
+  width: 1600px;
+
+  display: flex; 
+	flex-direction: column;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+  gap: 20px;
+}
+.auth-container { 
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid black;
+  height: 400px;
+  width: 600px;
+
+  display: flex; 
+	flex-direction: column;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+  gap: 20px;
+}
+.addItem-container { 
+  position: absolute;
+  top: 50%;
+  left: 73.7%;
+  transform: translate(-20%, -50%);
+  border: 1px solid black;
+  height: 600px;
+  width: 400px;
+
+  display: flex; 
+	flex-direction: column;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+  gap: 20px;
+}
+.addItem-container > .input {
+  height: 50px;
+}
+.auth-container > .login-input {
+  height: 35px;
+  border-radius: 2%;
+  box-shadow: inset 1px;
+}
+.main-container > .datagrid {
+  position: relative;
+  width: 700px;
+  height: 300px !important;
+}
