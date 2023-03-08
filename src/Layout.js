@@ -7,14 +7,18 @@ import Dashboard from './pages/dashboard';
 
 export default function App() {
   
-  const loggedIn = useSelector(state => state.userState.loggedIn)
+  const employeeId = useSelector(state => state.userState.employeeId)
+  const name = useSelector(state => state.userState.name)
+
+  console.log(name)
+  console.log(employeeId)
 
   return (
     <div>
-        {!loggedIn &&
+        {name == null && employeeId == null &&
           <Auth />
         }
-        {loggedIn &&
+        {name != null && employeeId != null &&
           <Dashboard />        
         }    
     </div>

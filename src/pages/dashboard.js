@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useForm } from "react-hook-form";
+import React, { useEffect, useState} from 'react';
+import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios';
 
 //Material UI
@@ -7,19 +7,27 @@ import { DataGrid } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import EditIcon from '@mui/icons-material/Edit';
 import Stack from '@mui/material/Stack';
+import Avatar from '@mui/material/Avatar';
+import { blue } from '@mui/material/colors';
 
 import './../assets/main.css';
+import { SetRefresh, logOut } from '../actions/index'
+import { AddItem } from './addItem';
+import { EditItem } from './editItem';
 
 export default function Main() {
 
-    const { register, handleSubmit } = useForm({});
+    const dispatch = useDispatch();
 
+    const refresh = useSelector(state => state.userState.refresh);
     const [tableData, setTableData] = useState([]);
+    const [editMenu, setEditMenu] = useState(false);
     const [addMenu, setAddMenu] = useState(false);
-    const [refresh, setRefresh] = useState(false);
-    const [selectedItem, setSelectedItem] = useState({});
+    const [test, setTest] = useState(false);
+    const [selectedItem, setSelectedItem] = useState('');
 
     const columns = [
         { field: 'itemName', headerName: 'Item name', width: 200},
@@ -33,40 +41,27 @@ export default function Main() {
         }).catch(() => {
             //not in use
         }).finally(() => {
-             setRefresh(false)
+            dispatch(SetRefresh(false))
         })
-    }
-
-    const handleAddMenuClick = () => {
-        if(addMenu) {
-            setAddMenu(false);
-        }
-        else {
-            setAddMenu(true);
-        }
     }
 
     const handleModelChange = values => {
         setSelectedItem(values)
+        setTest(true)
     };
 
-    const onSubmit = values => {
-        axios.post('http://127.0.0.1:5000/items/post', values)
-        .then((ef) => {
-            console.log(ef)
-            setRefresh(true)
+    const handleDelete = () => {
+        axios.delete('http://127.0.0.1:5000/items/remove/' + selectedItem).then(()=> {
+            dispatch(SetRefresh(true))
         }).catch((e) => {
             console.log(e)
         });
     }
 
-    const handleDelete = () => {
-        console.log(selectedItem)
-    }
-
     useEffect(() => {
         if(refresh) {
             fetchItems()
+            SetRefresh(false)
         }        
     }, [refresh])
 
@@ -77,18 +72,34 @@ export default function Main() {
     return (
         <React.Fragment>
             <div className="main-container">
-                <Stack direction="row" spacing={2}>
-                    <Button variant="contained" onClick={handleDelete} startIcon={<DeleteIcon />}>
-                        Verwijderen
+                <div className="profile-button">
+                    <Button onClick={() => dispatch(logOut({employeeId: null, name: null}))}>
+                            <Avatar sx={{ bgcolor: blue[500] }} variant="rounded">
+                                <AccountBoxIcon />
+                            </Avatar>
                     </Button>
-                    <Button variant="contained" onClick={handleAddMenuClick} endIcon={<AddIcon />}>
-                        Toevoegen
-                    </Button>
-                    <Button variant="contained" endIcon={<EditIcon />}>
-                        Aanpassen
-                    </Button>
-                </Stack>
-                
+                </div>
+                <div className='button-group'>
+                    <Stack direction="row" spacing={2}>
+                        <Button variant="contained" 
+                                onClick={handleDelete} 
+                                startIcon={<DeleteIcon />}>
+                            Verwijderen
+                        </Button>
+
+                        <Button variant="contained" 
+                                onClick={() => setAddMenu(!addMenu)} 
+                                endIcon={<AddIcon />}>
+                            Toevoegen
+                        </Button>
+                        <Button variant="contained" 
+                                onClick={() => setEditMenu(!editMenu)}
+                                disabled= {!test} 
+                                endIcon={<EditIcon />}>
+                            Aanpassen
+                        </Button>
+                    </Stack>
+                </div>
                 <DataGrid className='datagrid'
                         rows={tableData}
                         columns={columns}
@@ -98,31 +109,14 @@ export default function Main() {
                                 
             </div>
 
-            {addMenu &&
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="addItem-container">            
-                        <input type='text'
-                               className='input'
-                               placeholder='Naam onderdeel' 
-                               {...register('itemName')} />
-
-                        <input type='text'
-                               className='input'
-                               placeholder='serienummer' 
-                               {...register('itemId')} /> 
-
-                        <input type='number'
-                               className='input'
-                               placeholder='Hoeveelheid' 
-                               {...register('quantity')} /> 
-
-                        <div className='logingroup'>
-                            <button type='submit'>Opslaan</button>
-                            <button onClick={handleAddMenuClick}>Annuleren</button>
-                        </div>
-                    </div>
-                </form>
+            {editMenu &&
+                <EditItem open={editMenu} 
+                          id={selectedItem}/>
             } 
+ 
+            {addMenu && 
+                <AddItem open={addMenu}/>
+            }
 
         </React.Fragment>
     );

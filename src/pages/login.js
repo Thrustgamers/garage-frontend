@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useDispatch } from 'react-redux';
 import { Alert } from '@mui/material';
+import Button from '@mui/material/Button';
+import LoginIcon from '@mui/icons-material/Login';
+import LockResetIcon from '@mui/icons-material/LockReset';
+import TextField from '@mui/material/TextField';
 import axios from 'axios';
 
 import './../assets/main.css';
@@ -17,18 +21,21 @@ export default function Auth() {
 
     const onSubmit = data => {
         if (data?.employeeId && data?.password) {
-            axios.get('http://127.0.0.1:5000/login/' + data.employeeId + '-' + data.password).then(response => {
-                if(response.data) {
-                    dispatch(setUser());
+            axios.post('http://127.0.0.1:5000/login/', data).then(response => {
+                console.log(response)
+                if(response.data.authenticated) {
+                    dispatch(setUser({
+                        employeeId: response.data.cookie.employeeId, 
+                        name: response.data.cookie.name
+                    }));
                 }
                 else {
                     setNeedAlert(true)
                     setAlertText("Deze gegevens zijn onjuist")
                 }
-            }).catch(() => {
-                //not in use
-            }).finally(() => {
-                 //not in use
+            }).catch(e => {
+                setNeedAlert(true)
+                setAlertText(e)
             })
         }
         else {
@@ -46,26 +53,44 @@ export default function Auth() {
     return (
         <div>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="auth-container">            
-                    <input type='text'
-                           className='login-input'
-                           placeholder='Werknemers ID' 
-                           {...register('employeeId')} />
+                <div className="auth-container">   
 
-                    <input type='password'
-                           className='login-input'
-                           placeholder='Wachtwoord' 
-                           {...register('password')} /> 
-
-                    <div className='logingroup'>
-                        <button type='submit'>Inloggen</button>
-                        <button onClick={() => {alert('Imagine losing your password DUDE')}}>Wachtwoord vergeten</button>
-                    </div>
-
+                    <TextField autoFocus
+                               className='login-input'
+                               margin="dense"
+                               id="name"
+                               label="Werknemers ID"
+                               type="text"
+                               variant="standard"
+                               {...register('employeeId')} 
+                    />
+                    <TextField autoFocus
+                               className='login-input'
+                               margin="dense"
+                               id="name"
+                               label="Wachtwoord"
+                               type="password"
+                               variant="standard"
+                               {...register('password')} 
+                    />
+                                  
+                    <Button variant="contained" 
+                            type='submit'
+                            startIcon={<LoginIcon />}>
+                            Log In
+                    </Button>
+                    <Button variant="contained" 
+                            onClick={() => alert('Forgot Password')}
+                            startIcon={<LockResetIcon />}>
+                            Wachtwoord vergeten
+                    </Button>
+                
                     {needAlert && 
-                        <Alert variant="filled" severity="error" className='errorMessage'>
-                                {alertText}
-                        </Alert>
+                        <div className='login-alert'>
+                            <Alert variant="filled" severity="error" className='errorMessage'>
+                                    {alertText}
+                            </Alert>
+                        </div>
                     }
                 </div>
             </form>

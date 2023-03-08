@@ -18,7 +18,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border: 1px solid black;
+  box-shadow: 0px 1px 3px black inset;
   height: 800px;
   width: 1600px;
 
@@ -29,30 +29,18 @@
 	align-items: center;
   gap: 20px;
 }
+.main-container > .button-group {
+  margin-top: 5px;
+}
+
 .auth-container { 
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border: 1px solid black;
-  height: 400px;
-  width: 600px;
-
-  display: flex; 
-	flex-direction: column;
-	flex-wrap: wrap;
-	justify-content: center;
-	align-items: center;
-  gap: 20px;
-}
-.addItem-container { 
-  position: absolute;
-  top: 50%;
-  left: 73.7%;
-  transform: translate(-20%, -50%);
-  border: 1px solid black;
-  height: 600px;
+  height: 300px;
   width: 400px;
+  box-shadow: 0px 1px 3px black inset;
 
   display: flex; 
 	flex-direction: column;
@@ -60,17 +48,27 @@
 	justify-content: center;
 	align-items: center;
   gap: 20px;
-}
-.addItem-container > .input {
-  height: 50px;
 }
 .auth-container > .login-input {
   height: 35px;
+  width: 300px;
   border-radius: 2%;
+  margin-bottom: 20px;
   box-shadow: inset 1px;
 }
+
+.auth-container > .login-alert {
+  position: absolute;
+  top: 1%
+}
+
 .main-container > .datagrid {
   position: relative;
   width: 700px;
   height: 300px !important;
+}
+
+.main-container > .profile-button {
+  position: relative;
+  left: 47%;
 }
