@@ -1,7 +1,9 @@
 import {combineReducers} from 'redux'
 
 const initialState = {
-    loggedIn: false,
+    employeeId: null,
+    name: null,
+    refresh: false
 }
 
 const userState = (state = initialState, action) => {
@@ -9,13 +11,20 @@ const userState = (state = initialState, action) => {
         case "SET_USER":
             return {
                 ...state,
-                loggedIn: true
+                employeeId: action.payload.employeeId,
+                name: action.payload.name
             }
         case "LOG_OUT":
             return {
                 ...state,
-                loggedIn: false
-            }               
+                employeeId: null,
+                name: null,
+            } 
+        case "SET_REFRESH":
+        return {
+            ...state,
+            refresh: action.payload
+        }               
         default:
             return state
     }
