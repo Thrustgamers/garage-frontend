@@ -72,3 +72,14 @@
   position: relative;
   left: 47%;
 }
+
+#alert-dialog-slide-description {
+  min-width: 500px;
+}
+
+.main-container > .dashboardAlert {
+  position: absolute;
+  top: 1%;
+  float:right;
+  min-width:300px;
+}

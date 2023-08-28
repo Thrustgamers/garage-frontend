@@ -11,8 +11,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 
-import './../assets/main.css';
-import { SetRefresh } from '../actions/index'
+import { SetRefresh, setAlert } from '../../actions/index'
 
 export const AddItem = props => {
     
@@ -23,12 +22,24 @@ export const AddItem = props => {
     const [openMenu, setOpenMenu] = useState(props.open)
 
     const onSubmit = values => {
-        axios.post('http://127.0.0.1:5000/items/post', values).catch((error) => {
+        axios.post('http://localhost:5000/items/post', values).then(response => {
+            
+            if (response) {
+                let color = 'success'
+                if (response.data  !== 'OK') {
+                    color = 'error'
+                }
+                setOpenMenu(false)
+                dispatch(SetRefresh(true))
+                dispatch(setAlert({
+                    needAlert: true,
+                    alertMessage: response.data || 'Item Added',
+                    alertType: color
+                }))
+            }
+        }).catch((error) => {
             console.log(error)
-        }).finally(() => {
-            setOpenMenu(false)
-            dispatch(SetRefresh(true))
-        });
+        })
     }
     
     return (
@@ -51,6 +62,7 @@ export const AddItem = props => {
                                    id="name"
                                    label="serienummer"
                                    type="text"
+                                   defaultValue={props.id ?? ''}
                                    fullWidth
                                    variant="standard"
                                    {...register('itemId')} 

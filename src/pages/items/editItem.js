@@ -11,8 +11,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 
-import './../assets/main.css';
-import { SetRefresh } from '../actions/index'
+import { SetRefresh, setAlert } from '../../actions/index';
 
 export const EditItem = props => {
 
@@ -25,16 +24,21 @@ export const EditItem = props => {
     const [data, setData] = useState({})
 
     const onSubmit = values => {
-        axios.put('http://127.0.0.1:5000/items/update/' + props.id, values).catch((error) => {
+        axios.put('http://localhost:5000/items/update/' + props.id, values).catch((error) => {
             console.log(error)
         }).finally(() => {
             setOpenMenu(false)
             dispatch(SetRefresh(true))
+            dispatch(setAlert({
+                needAlert: true,
+                alertMessage: 'Item succesvol gewijziged',
+                alertType: 'success'
+            }))
         });
     }
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:5000/items/' + props.id).then(response => {
+        axios.get('http://localhost:5000/items/' + props.id).then(response => {
             console.log(response.data)
             setData(response.data)
         }).catch(() => {
@@ -49,7 +53,7 @@ export const EditItem = props => {
             {ready &&
                 <Dialog open={openMenu} onClose={() => setOpenMenu(false)}>
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <DialogTitle>Item toevoegen</DialogTitle>
+                        <DialogTitle>Item Aanpassen</DialogTitle>
                             <DialogContent>
                                 <TextField autoFocus
                                         margin="dense"

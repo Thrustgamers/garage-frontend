@@ -23,7 +23,7 @@ import { GenBarcode } from './barcode/genBarcode';
 import { ScanBarcode } from './barcode/scanBarcode';
 
 
-export default function Main() {
+export default function AdminBoard() {
 
     const dispatch = useDispatch();
 
@@ -78,15 +78,15 @@ export default function Main() {
         console.log(searchId)
         if (searchId > 0) {
             for (let item in data) {
-                //console.log(item)
-                if (item.itemId == searchId) {
-                    setSelectedItem(searchId)
-                    setEditMenu(true)
-                }
-                else {
-                    setAddMenu(true)
-                    setNewItemSerial(searchId)
-                }
+                console.log(item)
+                // if (item.itemId == searchId) {
+                //     setSelectedItem(searchId)
+                //     setEditMenu(true)
+                // }
+                // else {
+                //     setAddMenu(true)
+                //     setNewItemSerial(searchId)
+                // }
             }
         }
     }, [searchId])

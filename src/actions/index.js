@@ -3,7 +3,8 @@ export const setUser = data => {
         type: "SET_USER",
         payload : {
             employeeId: data.employeeId,
-            name: data.name
+            name: data.name,
+            isAdmin: data.isAdmin
         }
     }
 }
@@ -13,6 +14,24 @@ export const logOut = data => {
         payload : {
             employeeId: data.employeeId,
             name: data.name
+        }
+    }
+}
+
+export const setSearchItem = data => {
+    return {
+        type: "SEARCH_ITEM",
+        payload : data
+    }
+}
+
+export const setAlert = data => {
+    return {
+        type: "SET_ALERT",
+        payload : {
+            needAlert: data.needAlert,
+            alertMessage: data.alertMessage,
+            alertType: data.alertType
         }
     }
 }

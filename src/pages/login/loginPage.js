@@ -1,54 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useDispatch } from 'react-redux';
-import { Alert } from '@mui/material';
+import { Cookies } from 'react-cookie';
+
 import Button from '@mui/material/Button';
 import LoginIcon from '@mui/icons-material/Login';
 import LockResetIcon from '@mui/icons-material/LockReset';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 
-import './../assets/main.css';
-import { setUser } from '../actions/index'
+import { setUser } from '../../actions/index'
 
 export default function Auth() {
     
     const dispatch = useDispatch();
     const { register, handleSubmit } = useForm({});
 
-    const [needAlert, setNeedAlert] = useState(false)
-    const [alertText, setAlertText] = useState();
+    const [needError, setNeedError] = useState(false)
 
     const onSubmit = data => {
-        if (data?.employeeId && data?.password) {
-            axios.post('http://127.0.0.1:5000/login/', data).then(response => {
-                console.log(response)
-                if(response.data.authenticated) {
-                    dispatch(setUser({
-                        employeeId: response.data.cookie.employeeId, 
-                        name: response.data.cookie.name
-                    }));
-                }
-                else {
-                    setNeedAlert(true)
-                    setAlertText("Deze gegevens zijn onjuist")
-                }
-            }).catch(e => {
-                setNeedAlert(true)
-                setAlertText(e)
-            })
-        }
-        else {
-            setNeedAlert(true)
-            setAlertText("Vul gelieve een werknemers Id en/of wachtwoord in.")
-        }
+        if (!data.employeeId && !data.password) { setNeedError(true) }
+        axios.post('http://localhost:5000/user/login', data).then(response => {            
+            if(response.data.authenticated) { 
+                dispatch(setUser({
+                    employeeId: response.data.data.employeeId, 
+                    name: response.data.data.name,
+                    isAdmin: response.data.data.isAdmin
+                }));
+            }
+            else {
+                setNeedError(true) 
+            }
+        }).catch(e => {
+            setNeedError(true)
+        })
     }
 
     useEffect(() => {
-        if(needAlert) {
-            setTimeout(() => {setNeedAlert(false)}, 3000)
+        if(needError) {
+            setTimeout(() => {setNeedError(false)}, 3000)
         }
-    }, [needAlert]);
+    }, [needError]);
 
     return (
         <div>
@@ -56,21 +48,23 @@ export default function Auth() {
                 <div className="auth-container">   
 
                     <TextField autoFocus
+                               error={needError}
                                className='login-input'
                                margin="dense"
                                id="name"
                                label="Werknemers ID"
                                type="text"
-                               variant="standard"
+                               variant="outlined"
                                {...register('employeeId')} 
                     />
                     <TextField autoFocus
+                               error={needError}
                                className='login-input'
                                margin="dense"
                                id="name"
                                label="Wachtwoord"
                                type="password"
-                               variant="standard"
+                               variant="outlined"
                                {...register('password')} 
                     />
                                   
@@ -84,14 +78,6 @@ export default function Auth() {
                             startIcon={<LockResetIcon />}>
                             Wachtwoord vergeten
                     </Button>
-                
-                    {needAlert && 
-                        <div className='login-alert'>
-                            <Alert variant="filled" severity="error" className='errorMessage'>
-                                    {alertText}
-                            </Alert>
-                        </div>
-                    }
                 </div>
             </form>
         </div>

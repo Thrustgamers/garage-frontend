@@ -1,6 +1,11 @@
 import {combineReducers} from 'redux'
 
 const initialState = {
+    isAdmin: false,
+    needAlert: false,
+    alertType: null,
+    alertMessage: '',
+    searchId: null,
     employeeId: null,
     name: null,
     refresh: false
@@ -12,7 +17,8 @@ const userState = (state = initialState, action) => {
             return {
                 ...state,
                 employeeId: action.payload.employeeId,
-                name: action.payload.name
+                name: action.payload.name,
+                isAdmin: action.payload.isAdmin
             }
         case "LOG_OUT":
             return {
@@ -24,7 +30,19 @@ const userState = (state = initialState, action) => {
         return {
             ...state,
             refresh: action.payload
-        }               
+        }   
+        case "SEARCH_ITEM":
+            return {
+                ...state,
+                searchId: action.payload
+            }   
+        case "SET_ALERT":
+            return {
+                ...state,
+                needAlert: action.payload.needAlert,
+                alertMessage: action.payload.alertMessage,
+                alertType: action.payload.alertType
+            }            
         default:
             return state
     }
